@@ -7,14 +7,27 @@
     }
 
     body {
-      background-color: #000000;
+      background: transparent;
     }
 
-    button:hover{
-      background-color: #000000
+    button {
+      background: transparent;
       color: #ffffff
-      transform: scale(1.25);
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, transform .12s ease, border-color .18s ease;
+
     }
+
+    @media (hover: hover) and (pointer: fine){
+      button:hover {
+        background-color: #000000
+        color: #ffffff
+        transform: scale(1.25);
+        }
+    }
+      
+      
+    
   </style>
   <script>
     function sleep(ms) {
