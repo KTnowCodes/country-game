@@ -9,9 +9,20 @@
     body {
       background-color: #000000;
     }
+
+    button:hover{
+      background-color: #000000
+      color: #ffffff
+      transform: scale(1.25);
+    }
   </style>
   <script>
-    function start() {
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    
+    async function start() {
       alert("The journey awaits...");
       await sleep(2000);
       alert("3");
