@@ -11,14 +11,15 @@
     }
   </style>
   <script>
-    function start();
+    function start() {
       alert("The journey awaits...");
-      sleep(2000);
+      await sleep(2000);
       alert("3");
-      sleep(2000);
+      await sleep(2000);
       alert("2");
-      sleep(2000);
+      await sleep(2000);
       alert("1");
+    }
       
   </script>
   <head>
@@ -26,6 +27,6 @@
     <p class="starting"> Make your country victorious </p>
   </head>
   <body>
-    <button onclick="start()">Begin</button>
+    <button onclick="start()" style="text-color: #ffffff; background-color: #000000; border-style: solid; border-width: 2px; border-color: #ffffff; justify-content: center;">Begin</button>
   </body>
 </html>
