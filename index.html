@@ -40,6 +40,74 @@
         transform: scale(1.25);
       }
     }
+
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: #111;
+      padding: 24px 32px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 0 20px #222;
+      color: #eee;
+      text-align: left;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .modal-content label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 14px;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+    }
+    .modal-content button.submit-btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      background-color: #5a9;
+      color: #fff;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .modal-content button.switch-btn {
+      background: none;
+      border: none;
+      color: #59f;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 0.9rem;
+      display: block;
+      margin: 0 auto;
+    }
+    .modal-content .message {
+      min-height: 1.2em;
+      color: #fa7;
+      text-align: center;
+      margin-bottom: 10px;
+    }
   </style>
   <script>
     function sleep(ms) {
@@ -54,41 +122,133 @@
       alert("2");
       await sleep(2000);
       alert("1");
+      // After countdown, navigate to game.html
+      window.location.href = 'game.html';
     }
+
+    // Login/Register modal logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+          <h2 id="modalTitle">Login</h2>
+          <form id="authForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required autocomplete="username" />
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required autocomplete="current-password" />
+            <button type="submit" class="submit-btn">Login</button>
+          </form>
+          <p class="message" id="message"></p>
+          <button class="switch-btn" id="switchBtn">Don't have an account? Register</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const authForm = modal.querySelector('#authForm');
+      const modalTitle = modal.querySelector('#modalTitle');
+      const submitBtn = modal.querySelector('.submit-btn');
+      const switchBtn = modal.querySelector('#switchBtn');
+      const messageEl = modal.querySelector('#message');
+
+      let isLogin = true; // toggle between login and register
+
+      // Show modal function
+      window.login = function() {
+        modal.classList.add('active');
+        resetForm();
+      };
+
+      // Close modal on outside click
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+
+      // Switch between login and register
+      switchBtn.addEventListener('click', () => {
+        isLogin = !isLogin;
+        modalTitle.textContent = isLogin ? 'Login' : 'Register';
+        submitBtn.textContent = isLogin ? 'Login' : 'Register';
+        switchBtn.textContent = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
+        messageEl.textContent = '';
+        authForm.reset();
+      });
+
+      // Simple user "database" in localStorage (for demo only)
+      // Structure: { username: password }
+      function getUsers() {
+        return JSON.parse(localStorage.getItem('users') || '{}');
+      }
+      function saveUsers(users) {
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+
+      // Handle form submit
+      authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = authForm.username.value.trim().toLowerCase();
+        const password = authForm.password.value;
+
+        if (!username || !password) {
+          messageEl.textContent = 'Please fill in all fields.';
+          return;
+        }
+
+        const users = getUsers();
+
+        if (isLogin) {
+          // Login flow
+          if (!users[username]) {
+            messageEl.textContent = 'User not found. Please register.';
+            return;
+          }
+          if (users[username] !== password) {
+            messageEl.textContent = 'Incorrect password.';
+            return;
+          }
+          messageEl.style.color = '#7f7';
+          messageEl.textContent = `Welcome back, ${username}!`;
+          // Close modal after short delay
+          setTimeout(() => modal.classList.remove('active'), 1500);
+        } else {
+          // Register flow
+          if (users[username]) {
+            messageEl.textContent = 'User already exists. Please login.';
+            return;
+          }
+          users[username] = password;
+          saveUsers(users);
+          messageEl.style.color = '#7f7';
+          messageEl.textContent = `Registration successful! You can now login.`;
+          // Switch to login mode after registration
+          setTimeout(() => {
+            isLogin = true;
+            modalTitle.textContent = 'Login';
+            submitBtn.textContent = 'Login';
+            switchBtn.textContent = "Don't have an account? Register";
+            messageEl.textContent = '';
+            authForm.reset();
+          }, 1500);
+        }
+      });
+
+      // Reset form and message
+      function resetForm() {
+        authForm.reset();
+        messageEl.textContent = '';
+        messageEl.style.color = '#fa7';
+      }
+    });
   </script>
 </head>
 <body>
   <h1 class="starting">Country Game</h1>
   <p class="starting">Make your country victorious</p>
   <button type="button" onclick="start()">Begin</button>
+  <button type="button" onclick="login()">Login or Register</button>
 </body>
 </html>
 
-      
-    
-  </style>
-  <script>
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    
-    async function start() {
-      alert("The journey awaits...");
-      await sleep(2000);
-      alert("3");
-      await sleep(2000);
-      alert("2");
-      await sleep(2000);
-      alert("1");
-    }
-      
-  </script>
-  <head>
-    <h1 class="starting"> Country Game </h1>
-    <p class="starting"> Make your country victorious </p>
-  </head>
-  <body>
-    <button onclick="start()" style="text-color: #ffffff; background-color: #000000; border-style: solid; border-width: 2px; border-color: #ffffff; justify-content: center;">Begin</button>
-  </body>
-</html>
