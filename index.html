@@ -1,31 +1,69 @@
 <!doctype html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Country Game</title>
   <style>
-    .starting {
+    body {
+      background-color: #000000;
+      margin: 0;
+      font-family: system-ui, sans-serif;
       color: #ffffff;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      gap: 16px;
     }
 
-    body {
-      background: transparent;
+    .starting {
+      margin: 0;
     }
 
     button {
       background: transparent;
-      color: #ffffff
+      color: #ffffff;
       cursor: pointer;
-      transition: background .18s ease, color .18s ease, transform .12s ease, border-color .18s ease;
-
+      border: 2px solid #ffffff;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 6px;
+      transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
     }
 
-    @media (hover: hover) and (pointer: fine){
+    @media (hover: hover) and (pointer: fine) {
       button:hover {
-        background-color: #000000
-        color: #ffffff
+        background: transparent;
+        color: #ffffff;
         transform: scale(1.25);
-        }
+      }
     }
-      
+  </style>
+  <script>
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function start() {
+      alert("The journey awaits...");
+      await sleep(2000);
+      alert("3");
+      await sleep(2000);
+      alert("2");
+      await sleep(2000);
+      alert("1");
+    }
+  </script>
+</head>
+<body>
+  <h1 class="starting">Country Game</h1>
+  <p class="starting">Make your country victorious</p>
+  <button type="button" onclick="start()">Begin</button>
+</body>
+</html>
+
       
     
   </style>
